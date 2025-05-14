@@ -31,6 +31,17 @@
 
 #include <artnet/common.h>
 
+
+
+
+#ifdef _MSC_VER
+	#define PACKED
+	#pragma pack(push,1)
+#else
+	#define PACKED __attribute__((packed))
+#endif
+
+
 enum { ARTNET_MAX_RDM_ADCOUNT = 32 };
 
 enum { ARTNET_MAX_UID_COUNT = 200 };
@@ -41,72 +52,43 @@ enum { ARTNET_MAX_RDM_DATA = 512 };
 
 enum { ARTNET_FIRMWARE_SIZE = 512 };
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
 enum artnet_packet_type_e {
-	ARTNET_POLL = 0x2000,
-	ARTNET_REPLY = 0x2100,
-	ARTNET_DMX = 0x5000,
-	ARTNET_ADDRESS = 0x6000,
-	ARTNET_INPUT = 0x7000,
-	ARTNET_TODREQUEST = 0x8000,
-	ARTNET_TODDATA = 0x8100,
-	ARTNET_TODCONTROL = 0x8200,
-	ARTNET_RDM = 0x8300,
-	ARTNET_VIDEOSTEUP = 0xa010,
-	ARTNET_VIDEOPALETTE = 0xa020,
-	ARTNET_VIDEODATA = 0xa040,
-	ARTNET_MACMASTER = 0xf000,
-	ARTNET_MACSLAVE = 0xf100,
-	ARTNET_FIRMWAREMASTER = 0xf200,
-	ARTNET_FIRMWAREREPLY = 0xf300,
-	ARTNET_IPPROG = 0xf800,
-	ARTNET_IPREPLY = 0xf900,
-	ARTNET_MEDIA = 0x9000,
-	ARTNET_MEDIAPATCH = 0x9200,
-	ARTNET_MEDIACONTROLREPLY = 0x9300
-}
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+  ARTNET_POLL = 0x2000,
+  ARTNET_REPLY = 0x2100,
+  ARTNET_DMX = 0x5000,
+  ARTNET_ADDRESS = 0x6000,
+  ARTNET_INPUT = 0x7000,
+  ARTNET_TODREQUEST = 0x8000,
+  ARTNET_TODDATA = 0x8100,
+  ARTNET_TODCONTROL = 0x8200,
+  ARTNET_RDM = 0x8300,
+  ARTNET_VIDEOSTEUP = 0xa010,
+  ARTNET_VIDEOPALETTE = 0xa020,
+  ARTNET_VIDEODATA = 0xa040,
+  ARTNET_MACMASTER = 0xf000,
+  ARTNET_MACSLAVE = 0xf100,
+  ARTNET_FIRMWAREMASTER = 0xf200,
+  ARTNET_FIRMWAREREPLY = 0xf300,
+  ARTNET_IPPROG = 0xf800,
+  ARTNET_IPREPLY = 0xf900,
+  ARTNET_MEDIA = 0x9000,
+  ARTNET_MEDIAPATCH = 0x9200,
+  ARTNET_MEDIACONTROLREPLY = 0x9300
+} PACKED;
 
 typedef enum artnet_packet_type_e artnet_packet_type_t;
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
-struct artnet_poll_s {
+struct	artnet_poll_s {
   uint8_t  id[8];
   uint16_t opCode;
   uint8_t  verH;
   uint8_t  ver;
   uint8_t  ttm;
   uint8_t  pad;
-}
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
 
 typedef struct artnet_poll_s artnet_poll_t;
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
 struct artnet_reply_s {
   uint8_t  id[8];
   uint16_t opCode;
@@ -140,22 +122,10 @@ struct artnet_reply_s {
   uint8_t  style;
   uint8_t  mac[ARTNET_MAC_SIZE];
   uint8_t  filler[32];
-}
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
 
 typedef struct artnet_reply_s artnet_reply_t;
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
 struct artnet_ipprog_s {
   uint8_t  id[8];
   uint16_t OpCode;
@@ -184,22 +154,10 @@ struct artnet_ipprog_s {
   uint8_t  Spare7;
   uint8_t  Spare8;
 
-}
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
 
 typedef struct artnet_ipprog_s artnet_ipprog_t;
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
 struct artnet_ipprog_reply_s {
   uint8_t id[8];
   uint16_t  OpCode;
@@ -227,22 +185,11 @@ struct artnet_ipprog_reply_s {
   uint8_t  Spare6;
   uint8_t  Spare7;
   uint8_t  Spare8;
-}
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
 
 typedef struct artnet_ipprog_reply_s artnet_ipprog_reply_t;
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
+
 struct artnet_address_s {
   uint8_t  id[8];
   uint16_t opCode;
@@ -257,21 +204,11 @@ struct artnet_address_s {
   uint8_t  subnet;
   uint8_t  swvideo;
   uint8_t  command;
-} 
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
+
 typedef struct artnet_address_s artnet_address_t;
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
+
 struct artnet_dmx_s {
   uint8_t  id[8];
   uint16_t opCode;
@@ -283,22 +220,11 @@ struct artnet_dmx_s {
   uint8_t  lengthHi;
   uint8_t  length;
   uint8_t  data[ARTNET_DMX_LENGTH];
-} 
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
 
 typedef struct artnet_dmx_s artnet_dmx_t;
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
+
 struct artnet_input_s {
   uint8_t id[8];
   uint16_t  opCode;
@@ -309,22 +235,11 @@ struct artnet_input_s {
   uint8_t  numbportsH;
   uint8_t  numbports;
   uint8_t  input[ARTNET_MAX_PORTS];
-}
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
 
 typedef struct artnet_input_s artnet_input_t;
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
+
 struct artnet_todrequest_s {
   uint8_t  id[8];
   uint16_t opCode;
@@ -343,23 +258,12 @@ struct artnet_todrequest_s {
   uint8_t  command;
   uint8_t  adCount;
   uint8_t  address[ARTNET_MAX_RDM_ADCOUNT];
-} 
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
 
 typedef struct artnet_todrequest_s artnet_todrequest_t;
 
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
+
 struct artnet_toddata_s {
   uint8_t  id[8];
   uint16_t opCode;
@@ -382,22 +286,10 @@ struct artnet_toddata_s {
   uint8_t  blockCount;
   uint8_t  uidCount;
   uint8_t  tod[ARTNET_MAX_UID_COUNT][ARTNET_RDM_UID_WIDTH];
-}
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
 
 typedef struct artnet_toddata_s artnet_toddata_t;
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
 struct artnet_firmware_s {
   uint8_t  id[8];
   uint16_t opCode;
@@ -410,22 +302,10 @@ struct artnet_firmware_s {
   uint8_t  length[4];
   uint8_t  spare[20];
   uint16_t  data[ARTNET_FIRMWARE_SIZE ];
-} 
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
 
 typedef struct artnet_firmware_s artnet_firmware_t;
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
 struct artnet_todcontrol_s {
   uint8_t  id[8];
   uint16_t opCode;
@@ -443,23 +323,13 @@ struct artnet_todcontrol_s {
   uint8_t  spare8;
   uint8_t  cmd;
   uint8_t  address;
-} 
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
+
 
 typedef struct artnet_todcontrol_s artnet_todcontrol_t;
 
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
+
 struct artnet_rdm_s {
   uint8_t id[8];
   uint16_t  opCode;
@@ -478,24 +348,12 @@ struct artnet_rdm_s {
   uint8_t  cmd;
   uint8_t  address;
   uint8_t  data[ARTNET_MAX_RDM_DATA];
-} 
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
 
 
 typedef struct artnet_rdm_s artnet_rdm_t;
 
 
-#ifdef WIN32
-#define PACKED
-#pragma pack( push, packing )
-#pragma pack( 1 )
-#endif
 struct artnet_firmware_reply_s {
   uint8_t  id[8];
   uint16_t opCode;
@@ -505,14 +363,7 @@ struct artnet_firmware_reply_s {
   uint8_t  filler2;
   uint8_t  type;
   uint8_t  spare[21];
-} 
-#ifdef WIN32 
-PACKED;
-#pragma pack( pop, packing )
-#undef PACKED
-#else 
-__attribute__((packed));
-#endif
+} PACKED;
 
 typedef struct artnet_firmware_reply_s artnet_firmware_reply_t;
 
@@ -545,5 +396,13 @@ typedef struct {
 } artnet_packet_t;
 
 typedef artnet_packet_t *artnet_packet;
+
+
+#ifdef _MSC_VER
+	#pragma pack(pop)
+#endif
+
+#undef PACKED
+
 
 #endif

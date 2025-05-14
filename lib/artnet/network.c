@@ -21,20 +21,24 @@
 
 #include <errno.h>
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(_MSC_VER)
 #include <sys/socket.h> // socket before net/if.h for mac
 #include <net/if.h>
 #include <sys/ioctl.h>
-#include <unistd.h>
 #else
 typedef int socklen_t;
 #include <winsock2.h>
-#include <Lm.h>
+#include <lm.h>
 #include <iphlpapi.h>
-typedef SSIZE_T ssize_t;
 #endif
 
-
+// Visual Studio specific things, that may not be needed for MinGW/MSYS
+#ifdef _MSC_VER
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#else
+#include <unistd.h>
+#endif
 
 #include "private.h"
 
@@ -476,7 +480,7 @@ e_return :
  * Start listening on the socket
  */
 int artnet_net_start(node n) {
-  int sock;
+  artnet_socket_t sock;
   struct sockaddr_in servAddr;
   int true_flag = TRUE;
   node tmp;
@@ -497,7 +501,7 @@ int artnet_net_start(node n) {
     // create socket
     sock = socket(PF_INET, SOCK_DGRAM, 0);
 
-    if (sock < 0) {
+    if (sock == INVALID_SOCKET) {
       artnet_error("Could not create socket %s", artnet_net_last_error());
       return ARTNET_ENET;
     }
@@ -509,13 +513,6 @@ int artnet_net_start(node n) {
 
     if (n->state.verbose)
       printf("Binding to %s \n", inet_ntoa(servAddr.sin_addr));
-
-    // bind sockets
-    if (bind(sock, (SA *) &servAddr, sizeof(servAddr)) == -1) {
-      artnet_error("Failed to bind to socket %s", artnet_net_last_error());
-      artnet_net_close(sock);
-      return ARTNET_ENET;
-    }
 
     // allow bcasting
     if (setsockopt(sock,
@@ -550,7 +547,29 @@ int artnet_net_start(node n) {
       artnet_net_close(sock);
       return ARTNET_ENET;
     }
+#else
+// allow reusing 6454 port _ 
+    if (setsockopt(sock,
+                   SOL_SOCKET,
+                   SO_REUSEPORT,
+                   (char*) &true_flag, // char* for win32
+                   sizeof(int)) == -1) {
+      artnet_error("Failed to bind to socket %s", artnet_net_last_error());
+      artnet_net_close(sock);
+      return ARTNET_ENET;
+    }
 #endif
+
+    if (n->state.verbose)
+      printf("Binding to %s \n", inet_ntoa(servAddr.sin_addr));
+
+    // bind sockets
+    if (bind(sock, (SA *) &servAddr, sizeof(servAddr)) == -1) {
+      artnet_error("Failed to bind to socket %s", artnet_net_last_error());
+      artnet_net_close(sock);
+      return ARTNET_ENET;
+    }
+
 
     n->sd = sock;
     // Propagate the socket to all our peers
@@ -696,7 +715,7 @@ int artnet_net_set_fdset(node n, fd_set *fdset) {
 /*
  * Close a socket
  */
-int artnet_net_close(int sock) {
+int artnet_net_close(artnet_socket_t sock) {
 #ifdef WIN32
   shutdown(sock, SD_BOTH);
   closesocket(sock);

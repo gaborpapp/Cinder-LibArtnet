@@ -22,7 +22,7 @@
 #  include <config.h>
 #endif
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(_MSC_VER)
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -100,7 +100,9 @@ extern uint16_t HIGH_BYTE;
 #endif
 
 // byte ordering macros
+#ifndef bswap_16
 #define bswap_16(x)  ((((x) >> 8) & 0xff) | (((x) & 0xff) << 8))
+#endif
 
 // htols : convert short from host to little endian order
 #ifdef WIN32
@@ -443,7 +445,7 @@ typedef struct {
  * The main node structure
  */
 typedef struct artnet_node_s{
-  int sd;                  // the two sockets
+  artnet_socket_t sd;      // the two sockets
   node_state_t state;      // the state struct
   node_callbacks_t callbacks;  // the callbacks struct
   struct ports_s {
@@ -495,7 +497,7 @@ int artnet_net_send(node n, artnet_packet p);
 int artnet_net_set_non_block(node n);
 int artnet_net_init(node n, const char *ip);
 int artnet_net_start(node n);
-int artnet_net_close(int sock);
+int artnet_net_close(artnet_socket_t sock);
 int artnet_net_join(node n1, node n2);
 int artnet_net_set_fdset(node n, fd_set *fdset);
 int artnet_net_inet_aton(const char *ip_address, struct in_addr *address);
