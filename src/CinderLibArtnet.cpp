@@ -5,19 +5,18 @@ namespace ciArtnet {
 Node::Node() : didSetup( false ) {}
 
 Node::~Node() {} //should call close manually, quits uncleanly if quitting with no connection
-     
-void Node::setNumUniverses(int _num)
+
+void Node::setNumUniverses(int _num, int startUniverse)
 {
-    
     if (unis.size()) {
         std::cout<<"Error: Must call addUniverses() only once and before setup()."<<std::endl;
         return;
     }
-    
-    for (int i=0; i<_num; i++) {
-        unis.push_back( Universe(i,i+1) );
+
+	int uni = startUniverse;
+    for (int i=0; i<_num; i++, uni++) {
+        unis.push_back( Universe(i, uni) );
     }
-    
 }
 
 void Node::setUniverseAtIndex(int _index, int _universe)

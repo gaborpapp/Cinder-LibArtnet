@@ -24,7 +24,7 @@ public:
     Node();
     ~Node();
 
-    void    setNumUniverses(int _num);
+    void    setNumUniverses(int _num, int _startUniverse = 0);
     void    setUniverseAtIndex(int _index, int _universe);
     bool    setup(std::string _ip_addr, bool _sendRaw = false, uint8_t _subnet_addr = 0);
     
